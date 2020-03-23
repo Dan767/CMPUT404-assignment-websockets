@@ -101,8 +101,10 @@ def subscribe_socket(ws):
     try:
         while True:
             new = client.get()
-            data = myWorld.get(new)
-            ws.send(json.dumps(dict({new:data})))
+            if (new is not None):
+                data = myWorld.get(new)
+                ws.send(json.dumps(dict({new:data})))
+            
     except Exception as e:
         print(str(e))
     finally:

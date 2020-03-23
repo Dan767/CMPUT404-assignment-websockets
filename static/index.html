@@ -123,14 +123,15 @@ function getPosition(e) {
 
 function addEntity(entity, data) {
     world[entity] = data;
+    var dict = {};
+    dict[entity] = data;
+    socket.send(JSON.stringify(dict));
     drawNextFrame(); // (but should we?)
-    var dict = {entity:data}
-    socket.send(JSON.stringify(dict))
     //XXX: Send a XHTML Request that updates the entity you just modified!
 }
 var counter = 0;
 function addEntityWithoutName(data) {
-    var name = "X"+(counter++)%100;
+    var name = "X"+(counter++)%10000;
     addEntity(name,data);
 }
 
@@ -252,13 +253,10 @@ function update() {
 
 
 function wsSetup() {
-    var url = "ws://"+host+"/subscribe";   
+    var url = 'ws://'+host+'/subscribe';   
     socket = new WebSocket(url);
     socket.onopen = function() {
         //XXX: TODO What are you going to do here?
-        var json_stuff = socket.receive();
-        world = JSON.parse(json_stuff);
-        drawNextFrame()
     };
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
@@ -267,13 +265,14 @@ function wsSetup() {
         try {
             debug("WebSocket Recv:" + msg.data);
             //XXX: TODO What are you going to do here? 
-            var json_stuff = JSON.parse(socket.receive());
-            for (var key in json_stuff) {
-                if (json_stuff.hasOwnProperty(key) {
-                    world[key] = json_stuff[key]
-                }
-            }
-            
+            var json_stuff = JSON.parse(msg.data);
+            //Object.keys(data).forEach((key) => {
+            //    world[key] = json_stuff[key];
+            //});
+            for (key in json_stuff) {
+                world[key] = json_stuff[key];
+            }   
+            drawNextFrame();
                        
         } catch (e) {
             alert("socket on message: " + e);

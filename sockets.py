@@ -69,12 +69,6 @@ class World:
 
 myWorld = World()        
 
-def set_listener( entity, data ):
-    ''' do something with the update ! '''
-    #myWorld.set(entity, data)
-    print(str(entity))
-    return 
-
 #myWorld.add_set_listener( set_listener )
         
 @app.route('/')
@@ -89,6 +83,7 @@ def read_ws(ws):
         while True:
             json_stuff = ws.receive()
             if (json_stuff is not None):
+                #print("Stuff came in!")
                 json1 = json.loads(json_stuff)
                 for i in json1:
                     myWorld.set(i, json1[i])
@@ -99,9 +94,9 @@ def read_ws(ws):
 def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
        websocket and read updates from the websocket '''
+    print("hello")
     client = Client()
     myWorld.add_set_listener(client)
-    ws.send(json.dumps(myWorld.world()))
     g = gevent.spawn(read_ws, ws)
     try:
         while True:

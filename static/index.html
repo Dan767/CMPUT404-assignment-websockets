@@ -234,16 +234,16 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'red', 'radius':5});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'red', 'radius':5});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':10});
+    addEntityWithoutName({'x':x,'y':y,'colour':'blue',
+                          'radius':1});
 });
 
 
@@ -253,7 +253,8 @@ function update() {
 
 
 function wsSetup() {
-    var url = 'ws://'+host+'/subscribe';   
+    var url = "ws://127.0.0.1:5000/subscribe";
+           
     socket = new WebSocket(url);
     socket.onopen = function() {
         //XXX: TODO What are you going to do here?
@@ -279,6 +280,7 @@ function wsSetup() {
             alert("socket on message: " + e);
         }
     }; 
+    drawFrame();
 }
 
 wsSetup();
